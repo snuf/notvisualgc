@@ -1,95 +1,58 @@
-                            jvmstat 3.0
-
 Introduction
 ------------
 
-The jvmstat technology adds light weight performance and configuration
-instrumentation to the HotSpot JVM and provides a set of monitoring
-APIs and tools for monitoring the performance of the HotSpot JVM in
-production environments. The instrumentation is designed such that it
-is 'always on', yet has negligible performance impact. The monitoring
-interfaces added to the HotSpot JVM are proprietary and may or may not
-be supported in future versions of the HotSpot JVM.
+Basically this is a decompiled and altered version of the original 
+jvmstat. VisualGC is a great tool, it's lightweight, non intrussive
+and gives you all the info you'd want to have that doesn't come in
+one overview from jstat. The only thing I found lacking is a 
+non-visual version of it.
 
-The core jvmstat technology has now been included in Java SE 5.0 and
-later. This jvmstat 3.0 bundle includes only the visualgc tool and
-is backward compatible with J2SE 1.4.2 and J2SE 1.4.1. Therefore with
-Java SE 5.0 or later and this jvmstat 3.0 bundle you can use visualgc
-to monitor applications running on J2SE 1.4.1, J2SE 1.4.2, or
-Java SE 5.0 or later.
+I've added three classes to it that handle the main program, File
+handling, that when appending adds YYYYMMDD to the file, the PrintGC
+class which basically dumps and returns stuff and the main NotVisualGC
+class. PrintGC should be renamed, but that will come with the next
+version that can be used as an agent. It also hasn't been tested with
+7.X yet, only with 5 and 6 so it might require incorporation with a
+newer jvmstat version to support 7.
 
+At a later stage carbon (graphite) support was added, the socket
+automatically reconnects on disconnect.
 
-Installation
-------------
+For windows the CMD script could use some tweaking.
 
-This distribution of the jvmstat tools requires Java SE 5.0 or later
-with the HotSpot JVM. Before configuring and using the jvmstat tools, first
-download and install Java SE 5.0 or later for your operating environment.
-You must choose the JDK distribution as the class files needed by the
-monitoring tools are not included with the JRE. 
+Usage
+-----
 
-  http://java.sun.com/j2se/1.5.0/download.html
-  http://java.sun.com/j2se/1.6.0/download.html
+It can either be used from the CLI/startup script or as a java agent.
 
-Once you have a working Java SE 5.0 or later installation, you are
-ready to install the jvmstat distribution. Follow the platform
-specific instructions for UNIX platforms and Windows platforms.
-The installation instructions are online at:
+From the CLI a pid is required, optionally an interval and a file that 
+will be used to write to. 
 
-  http://java.sun.com/performance/jvmstat
+As a java agent there are two options, the "interval,filename". If the 
+interval and filename are omitted the default will be 
+"1000,NotVisualGC.out-YYYYMMDD"
 
-The installation instructions are also included in the jvmstat 3.0
-distribution in the docs/install directory. Just point your browser
-at file://<jvmstat_install_directory>/docs/index.html and follow the
-links to the installation pages.
+The graphite output is only tested with the agent, usage can be derived
+from the file in bin/visualgc-with-agent-graphite.
 
+funs@rope:~/notvisualgc$ sh bin/notvisualgc -?
+Version 3.0_b07 12/10/06 - Requires Sun Java SE 5.0 or later with the HotSpot JVM
+usage: (not)visualgc -help
+       (not)visualgc <vmid> [<interval>]
+       notvisualgc <vmid> [<interval>] [<filename>]
 
-Files and Directories
----------------------
-
-README
-        This file
-
-LICENSE
-        The terms of use for jvmstat 3.0
-
-bat/
-        visualgc.cmd -- Windows cmd processor script to launch visualgc
-
-bin/
-        visualgc -- ksh script to launch visualgc
-
-docs/
-        index.html -- HTML documentation (includes platform specific
-        installation instructions).
-	
-jars/
-        Jar files used by visualgc.
-
-
-Online Documentation
---------------------
-
-For the latest jvmstat information please see:
-
-  http://java.sun.com/performance/jvmstat
-
-
-Local Documentation
--------------------
-
-Installation documentation and manual pages are included with the
-distribution. Point your browser at:
-
-   file://<jvmstat_install_dir>/docs/index.html
-
-Where <jvmstat_install_dir> is the directory where you installed
-the jvmstat distribution.
-
-
-Problems, Questions, Feedback
------------------------------
-
-If you encounter any problems, have any questions, or want to offer
-any feedback, please send email to jvmstat-support@sun.com.
-
+Definitions:
+  <vmid>        Virtual Machine Identifier. A vmid takes the following form:
+                     <lvmid>[@<hostname>[:<port>]]
+                Where <lvmid> is the local vm identifier for the target
+                Java virtual machine, typically a process id; <hostname> is
+                the name of the host running the target Java virtual machine;
+                and <port> is the port number for the rmiregistry on the
+                target host. See the visualgc documentation for a more complete
+                description of a <vmid>.
+  <interval>    Sampling interval. The following forms are allowed:
+                    <n>["ms"|"s"]
+                Where <n> is an integer and the suffix specifies the units as 
+                milliseconds("ms") or seconds("s"). The default units are "ms".
+                The default interval is 500ms
+  <filename>    Write output to a file (notvisualgc only)
