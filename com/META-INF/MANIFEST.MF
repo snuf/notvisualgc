@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Class-Path: jvmstat_util.jar jvmstat_graph.jar 
+Created-By: 1.5.0 (Sun Microsystems Inc.) (and me)
+Main-Class: com.sun.jvmstat.tools.visualgc.VisualGC
+Premain-Class: com.sun.jvmstat.tools.visualgc.NotVisualGCAgent
+
+Name: funs
+Specification-Title: My stuff
+Specification-Version: 0.1
+Specification-Vendor: Me 

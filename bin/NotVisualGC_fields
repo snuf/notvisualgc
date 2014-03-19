@@ -1,0 +1,53 @@
+parse in xml, normal csv and in "normal" text
+
+ts: timestamp: miliseconds;
+os: oselapsedtime: this.Sample.osElapsedTime - this.previousSample.osElapsedTime;
+fr: osfrequency: GCSample.osFrequency
+
+JVM:
+jst: JVM State:  this.State
+jrt: JVM run time:Converter.longToTimeString(this.Sample.osElapsedTime, GCSample.osFrequency);
+
+Compile:
+cmp: Compiles: this.Sample.totalCompile
+cmpt: Compile time: Converter.longToTimeString(this.Sample.totalCompileTime, GCSample.osFrequency);
+
+Class loader:
+cll: CL loaded: this.Sample.classesLoaded
+clu: CL unloaded: this.Sample.classesUnloaded
+clt: CL Time: Converter.longToTimeString(this.Sample.classLoadTime, GCSample.osFrequency);
+
+Mem:
+edc: Eden capacity: this.Sample.edenCapacity
+edu: Eden used: this.Sample.edenUsed
+edgc: Eden GC: this.Sample.edenGCEvents
+edt: Eden Time: this.Sample.edenGCTime
+
+sv0c: Survivor 0 Capacity: this.Sample.survivor0Capacity
+sv0u: Survivor 0 Used: this.Sample.survivor0Used
+sv1c: Survivor 1 Capacity: this.Sample.survivor1Capacity 
+sv1u: Survivor 1 Used: this.Sample.survivor1Used
+
+tc: Tenured Capacity: this.Sample.tenuredCapacity
+tu: Tenyred Used: this.Sample.tenuredUsed
+tgc: Tenyred GC: this.Sample.tenuredGCEvents
+tt: Tenured Time: this.Sample.tenuredGCTime
+
+pc: Perm capacity: this.Sample.permCapacity
+pu: Perm used: this.Sample.permUsed
+
+GC:
+gc: Garbage collections: (this.Sample.edenGCEvents + this.Sample.tenuredGCEvents)
+gce: this.Sample.edenGCEvents
+gct: this.Sample.tenuredGCEvents
+gct: Garbage collection time (ms): Converter.longToTimeString(this.Sample.edenGCTime + this.Sample.tenuredGCTime, GCSample.osFrequency);
+gcte: Converter.longToTimeString(this.Sample.edenGCTime, GCSample.osFrequency)
+gctt: Converter.longToTimeString(this.Sample.tenuredGCTime, GCSample.osFrequency)
+gcc: Garbage collection cause: this.Sample.lastGCCause
+
+Finalizer
+fm: Finalizer Max Queue: this.Sample.finalizerQMaxLength
+fc: Finalizer Current: this.Sample.finalizerQLength
+flm: Finalizer Local Max: this.maxFinalizerQLength; ???
+fo: Finalizer Objects: this.Sample.finalizerCount
+ft: Finalizer Time: Converter.longToTimeString(this.Sample.finalizerTime, GCSample.osFrequency);

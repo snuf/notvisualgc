@@ -1,0 +1,6 @@
+*reminders*
+When expanding, change the Arguments first, NotVisualGC is setup with a
+main, which helps to "make decissions" and enables stuff to be plugged
+in, after editing the main also edit PrintGC for the desired output
+format.
+

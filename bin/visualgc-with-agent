@@ -1,0 +1,116 @@
+#!/bin/sh
+
+enverror() {
+  echo "Could not automatically set the JVMSTAT_JAVA_HOME environment"
+  echo "variable. Please set and export JVMSTAT_JAVA_HOME to the path"
+  echo "to the J2SE 5.0 JDK installation directory and try again."
+  exit 1
+}
+
+jreerror() {
+  echo "The java.exe found at:"
+  echo ${JVMSTAT_JAVA_HOME}
+  echo "is not in a JDK directory. Please set and export your"
+  echo "JVMSTAT_JAVA_HOME environment variable to refer to a"
+  echo "directory containing the Sun J2SE 1.5.0 JDK (not a JRE)"
+  echo "and try again."
+  exit 1
+}
+
+versionerror() {
+echo "The java.exe found at:"
+echo ${JVMSTAT_JAVA_HOME}
+echo "is not the Sun J2SE 1.5.0 JDK version. The J2SE version found is:"
+java -version
+echo "Please set and export your JVMSTAT_JAVA_HOME environment variable"
+echo "to refer to a directory containing the Sun J2SE 1.5.0 JDK (not JRE)"
+echo "and try again."
+}
+
+os=`uname -s`
+case ${os} in
+  Win*)
+    # mks doesn't have a /bin/sh, only ksh. Furthermore, a simple
+    # dirname $0 with mks always returns ".", so it is insufficient for
+    # determining the install directory. mks provides a which command,
+    # but it won't locate shell scripts, only binaries. The  whence command,
+    # which is ksh specific, will locate shell scripts, so we use it here.
+    SCRIPT_PATH=`whence "$0"`
+    BIN_DIR=`dirname "${SCRIPT_PATH}"`
+    JAVA_BIN=`whence java`
+    JAVA_BIN_DIR=`dirname "${JAVA_BIN}"`
+    ;;
+  *)
+    BIN_DIR=`/usr/bin/dirname "${0}"`
+    JAVA_BIN=`which java`
+    if [ ! -x "$JAVA_BIN" ] ; then
+      echo "Could not determine java bin directory: set JAVA_HOME and try again"
+      exit 1
+    fi
+    JAVA_BIN_DIR=`dirname "${JAVA_BIN}"`
+    ;;
+esac
+
+JVMSTAT_HOME=`(cd "${BIN_DIR}/.." && pwd)`
+# JVMSTAT_HOME=`pwd`
+VISUALGC_JAR=${JVMSTAT_HOME}/jars/visualgc.jar
+VGAPPROOT=com.sun.jvmstat.tools.visualgc
+CALL=`basename $0`
+
+if [ "$CALL" = "notvisualgc" ]; then
+	VGAPP="${VGAPPROOT}.NotVisualGC"
+else 
+	VGAPP="${VGAPPROOT}.VisualGC"
+fi
+
+if [ "${JAVA_HOME}" = "" ]; then
+  UN=`uname -s`
+  if [ "${UN}" = "Linux" ]; then 
+     if [ -f "/etc/debian_version" ]; then
+	JVMSTAT_JAVA_HOME="/usr/lib/jvm/default-java"
+     elif [ -f "/etc/redhat-release" ]; then
+	echo "not defined yet"
+	exit 1
+     fi
+  elif [ "${UN}" = "FreeBSD" ]; then
+     JVMSTAT_JAVA_HOME="/usr/local/openjdk6"
+  fi
+else 
+  JVMSTAT_JAVA_HOME=${JAVA_HOME}
+fi
+
+if [ "${JVMSTAT_JAVA_HOME}" = "" ] ; then
+  JVMSTAT_JAVA_HOME=`(cd "${JAVA_BIN_DIR}/.." && pwd)`
+
+  # check that we are dealing with a JDK, not a JRE or installed JDK
+  if [ ! -f "${JVMSTAT_JAVA_HOME}/lib/tools.jar" ] ; then
+    enverror
+  fi
+
+  # check that we are dealign with a Sun J2SE 1.5.0 JDK
+  if [ ! -x "${JVMSTAT_JAVA_HOME}/bin/jps" -a \
+       ! -x "${JVMSTAT_JAVA_HOME}/bin/jps.exe" ] ; then
+    enverror
+  fi
+else
+  # check that we are dealing with a JDK, not a JRE or installed JDK
+  if [ ! -f "${JVMSTAT_JAVA_HOME}/lib/tools.jar" ] ; then
+    jreerror
+  fi
+
+  # check that we are dealign with a Sun J2SE 1.5.0 JDK
+  if [ ! -x "${JVMSTAT_JAVA_HOME}/bin/jps" -a \
+       ! -x "${JVMSTAT_JAVA_HOME}/bin/jps.exe" ] ; then
+    versionerror
+  fi
+fi
+
+# including tools.jar in the standard classpath has no effect with -jar
+# and tools.jar can't be included in the jar manifest.
+# java $VMARGS -Xbootclasspath/p:"$JVMSTAT_JAVA_HOME/lib/tools.jar" -jar "${VISUALGC_JAR}" $*
+if [ "$*" = "" ]; then
+  ARGS="0"
+else 
+  ARGS="$*"
+fi
+java $VMARGS -javaagent:$VISUALGC_JAR="1000,/var/tmp/NotVisualGC.out" -Xbootclasspath/p:"$JVMSTAT_JAVA_HOME/lib/tools.jar" -cp "${VISUALGC_JAR}" ${VGAPP} $ARGS 
