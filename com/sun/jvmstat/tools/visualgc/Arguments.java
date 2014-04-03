@@ -29,8 +29,8 @@
      paramPrintStream.println("usage: (not)visualgc -help");
      paramPrintStream.println("       (not)visualgc <vmid> [<interval>]");
      paramPrintStream.println("       notvisualgc <vmid> [<interval>] [<filename>]");
-     paramPrintStream.println("       notvisualgc <vmid> [<interval>] [<prepend>] [<host>]"
-     paramPrintStream.println("       notvisualgc <vmid> [<interval>] [<prepend>] [<host>] [<port>] [<protoco>]"
+     paramPrintStream.println("       notvisualgc <vmid> [<interval>] [<prepend>] [<host>]");
+     paramPrintStream.println("       notvisualgc <vmid> [<interval>] [<prepend>] [<host>] [<port>] [<protoco>]");
      paramPrintStream.println();
      paramPrintStream.println("Definitions:");
      paramPrintStream.println("  <vmid>        Virtual Machine Identifier. A vmid takes the following form:");
