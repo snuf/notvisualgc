@@ -1,5 +1,5 @@
 #!/bin/sh
-cps="/usr/lib/jvm/default-java /usr/local/openjdk6 /usr/local/diablo-jdk1.6.0"
+cps="/usr/lib/jvm/default-java /usr/local/openjdk6 /usr/local/diablo-jdk1.6.0 /Library/Java/JavaVirtualMachines/jdk1.7.0_45.jdk/Contents/Home"
 cp=""
 for ncp in $cps
 do

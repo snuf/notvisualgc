@@ -20,8 +20,8 @@
    private String FileName;
    private String GraphitePrepend;
    private String GraphiteHost;
-   private String GraphitePort = "0";
-   private String GraphiteProto;
+   private String GraphitePort = "2003";
+   private String GraphiteProto = "tcp";
  
    public static void printUsage(PrintStream paramPrintStream)
    {
@@ -162,6 +162,14 @@
         this.GraphitePrepend = paramArrayOfString[(paramArrayOfString.length - 4)];
         this.interval = toMillis(paramArrayOfString[(paramArrayOfString.length - 5)]);
         this.vmIdString = paramArrayOfString[(paramArrayOfString.length - 6)];
+        break;
+     case 5:
+        this.GraphiteProto = "tcp";
+        this.GraphitePort = paramArrayOfString[(paramArrayOfString.length - 1)];
+        this.GraphiteHost = paramArrayOfString[(paramArrayOfString.length - 2)];
+        this.GraphitePrepend = paramArrayOfString[(paramArrayOfString.length - 3)];
+        this.interval = toMillis(paramArrayOfString[(paramArrayOfString.length - 4)]);
+        this.vmIdString = paramArrayOfString[(paramArrayOfString.length - 5)];
         break;
      case 4:
         this.GraphiteProto = "tcp";

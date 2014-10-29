@@ -15,7 +15,7 @@ public class NotVisualGCAgent {
 
   public static void premain(String agentArgs) {
     String vmId;
-    newParams = new String[4];
+    newParams = new String[6];
     String nameOfRunningVM = ManagementFactory.getRuntimeMXBean().getName();
     int p = nameOfRunningVM.indexOf('@');
     int c = 0;

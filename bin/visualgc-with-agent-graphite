@@ -113,5 +113,5 @@ if [ "$*" = "" ]; then
 else 
   ARGS="$*"
 fi
-java $VMARGS -javaagent:$VISUALGC_JAR="1000,java.notvisualgc.visualgc.1,localhost" -Xbootclasspath/p:"$JVMSTAT_JAVA_HOME/lib/tools.jar" -cp "${VISUALGC_JAR}" ${VGAPP} $ARGS 
+java $VMARGS -javaagent:$VISUALGC_JAR="1000,java.notvisualgc.visualgc.1,graphite,2003,tcp" -Xbootclasspath/p:"$JVMSTAT_JAVA_HOME/lib/tools.jar" -cp "${VISUALGC_JAR}" ${VGAPP} $ARGS 
 
